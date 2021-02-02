@@ -5,23 +5,20 @@ const FILES_TO_CACHE = [
   "/",
   "/index.html",
   "/styles.css",
-  "/dist/bundle.js",
-  "/dist/manifest.json",
-  "/dist/assets/icons/icon_96x96.png",
-  "/dist/assets/icons/icon_128x128.png",
-  "/dist/assets/icons/icon_192x192.png",
-  "/dist/assets/icons/icon_256x256.png",
-  "/dist/assets/icons/icon_384x384.png",
-  "/dist/assets/icons/icon_512x512.png",
+  "/index.js",
+  "/db.js",
+  "/manifest.json",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
 ]
 
 // install web worker
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-    .then(cache => cache.addAll(FILES_TO_CACHE))
-    .then(() => self.skipWaiting())
-    .catch(err => console.error("[sw.js] Error trying to pre-fetch cache files:", err))
+      .then(cache => cache.addAll(FILES_TO_CACHE))
+      .then(() => self.skipWaiting())
+      .catch(err => console.error("[sw.js] Error trying to pre-fetch cache files:", err))
   );
 });
 
@@ -31,25 +28,30 @@ self.addEventListener("activate", event => {
   const currentCaches = [STATIC_CACHE, RUNTIME_CACHE];
   event.waitUntil(
     caches.keys()
-    .then(cacheNames => {
-      return cacheNames.filter(
-        cacheName => !currentCaches.includes(cacheName)
-      );
-    })
-    .then(cachesToDelete => {
-      return Promise.all(
-        cachesToDelete.map(cacheToDelete => {
-          return caches.delete(cacheToDelete);
-        })
-      );
-    })
-    .then(() => self.clients.claim())
-    .catch(err => console.error('[sw.js] Error trying to activate cache files:', err))
+      .then(cacheNames => {
+        return cacheNames.filter(
+          cacheName => !currentCaches.includes(cacheName)
+        );
+      })
+      .then(cachesToDelete => {
+        return Promise.all(
+          cachesToDelete.map(cacheToDelete => {
+            return caches.delete(cacheToDelete);
+          })
+        );
+      })
+      .then(() => self.clients.claim())
+      .catch(err => console.error('[sw.js] Error trying to activate cache files:', err))
   );
 });
 
 // handle fetch section
 self.addEventListener("fetch", event => {
+  if (event.request.method) {
+    // console.log("=============event.request");
+    // console.log(event.request);
+  }
+
   if (
     event.request.method !== "GET" ||
     !event.request.url.startsWith(self.location.origin)

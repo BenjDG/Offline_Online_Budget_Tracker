@@ -1,22 +1,60 @@
 let transactions = [];
 let myChart;
+let online = true;
 
-alert('index Test');
 
+
+// if offline show data from cache and indexedDB
+
+
+
+
+// fetch data on page load
 fetch("/api/transaction")
   .then(response => {
+    console.log('api fetched');
     return response.json();
   })
   .then(data => {
     // save db data on global variable
+    console.log('set transactions to data');
     transactions = data;
+    console.log(`online status is: ${online}`);
+    console.log(`navigator online status is: ${navigator.onLine}`);
+    return data;
+  })
+  .then(() => {
+    if (!navigator.onLine) {
+      console.log('not online block test');
+      const transaction = db.transaction(["pending"], "readwrite");
+      const store = transaction.objectStore("pending");
+      // get all records from store and set to a variable
 
+      const getAll = store.getAll();
+      getAll.onsuccess = function () {
+        if (getAll.result.length > 0) {
+          console.log(transactions);
+          console.log("retrieved from local object store");
+          console.log(getAll.result);
+          getAll.result.forEach((item) => {
+            console.log('PUSH DANG IT')
+            transactions.unshift(item);
+          })
+          console.log("Does this work? " + transactions);
+          console.dir(transactions);
+          populateTotal();
+          populateTable();
+          populateChart();
+        }
+      }
+    }
+    console.log("PPPPPPPPPPPPPPPPPPPPPPPPPlease populate");
     populateTotal();
     populateTable();
     populateChart();
   });
 
-function populateTotal() {
+function populateTotal () {
   // reduce transaction amounts to a single total value
   let total = transactions.reduce((total, t) => {
     return total + parseInt(t.value);
@@ -26,7 +64,7 @@ function populateTotal() {
   totalEl.textContent = total;
 }
 
-function populateTable() {
+function populateTable () {
   let tbody = document.querySelector("#tbody");
   tbody.innerHTML = "";
 
@@ -42,7 +80,7 @@ function populateTable() {
   });
 }
 
-function populateChart() {
+function populateChart () {
   // copy array and reverse it
   let reversed = transactions.slice().reverse();
   let sum = 0;
@@ -68,19 +106,19 @@ function populateChart() {
 
   myChart = new Chart(ctx, {
     type: 'line',
-      data: {
-        labels,
-        datasets: [{
-            label: "Total Over Time",
-            fill: true,
-            backgroundColor: "#6666ff",
-            data
-        }]
+    data: {
+      labels,
+      datasets: [{
+        label: "Total Over Time",
+        fill: true,
+        backgroundColor: "#6666ff",
+        data
+      }]
     }
   });
 }
 
-function sendTransaction(isAdding) {
+function sendTransaction (isAdding) {
   let nameEl = document.querySelector("#t-name");
   let amountEl = document.querySelector("#t-amount");
   let errorEl = document.querySelector(".form .error");
@@ -113,7 +151,7 @@ function sendTransaction(isAdding) {
   populateChart();
   populateTable();
   populateTotal();
-  
+
   // also send to server
   fetch("/api/transaction", {
     method: "POST",
@@ -123,33 +161,45 @@ function sendTransaction(isAdding) {
       "Content-Type": "application/json"
     }
   })
-  .then(response => {    
-    return response.json();
-  })
-  .then(data => {
-    if (data.errors) {
-      errorEl.textContent = "Missing Information";
-    }
-    else {
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      if (data.errors) {
+        errorEl.textContent = "Missing Information";
+      }
+      else {
+        // clear form
+        nameEl.value = "";
+        amountEl.value = "";
+      }
+    })
+    .catch(err => {
+      // fetch failed, so save in indexed db
+      console.log("------------------------------------------------------catch err");
+      console.error(err);
+      saveRecord(transaction);
+
       // clear form
       nameEl.value = "";
       amountEl.value = "";
-    }
-  })
-  .catch(err => {
-    // fetch failed, so save in indexed db
-    saveRecord(transaction);
-
-    // clear form
-    nameEl.value = "";
-    amountEl.value = "";
-  });
+    });
 }
 
-document.querySelector("#add-btn").onclick = function() {
+document.querySelector("#add-btn").onclick = function () {
   sendTransaction(true);
 };
 
-document.querySelector("#sub-btn").onclick = function() {
+document.querySelector("#sub-btn").onclick = function () {
   sendTransaction(false);
 };
+
+window.addEventListener('online', function (e) {
+  online = true;
+  console.log('online');
+});
+
+window.addEventListener('offline', function (e) {
+  online = false;
+  console.log('offline');
+});

@@ -1,14 +1,18 @@
-const STATIC_CACHE = "static-cache-v1";
-const RUNTIME_CACHE = "runtime-cache";
+const STATIC_CACHE = "static-cache-v2";
+const RUNTIME_CACHE = "runtime-cache-v2";
 
 const FILES_TO_CACHE = [
   "/",
   "/index.html",
   "/styles.css",
   "/dist/bundle.js",
-  "icons/icon-192x192.png",
-  "icons/icon-512x512.png",
-  
+  "/dist/manifest.json",
+  "/dist/assets/icons/icon_96x96.png",
+  "/dist/assets/icons/icon_128x128.png",
+  "/dist/assets/icons/icon_192x192.png",
+  "/dist/assets/icons/icon_256x256.png",
+  "/dist/assets/icons/icon_384x384.png",
+  "/dist/assets/icons/icon_512x512.png",
 ]
 
 // install web worker

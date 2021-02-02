@@ -16,6 +16,7 @@ const config = {
       background_color: "#01579b",
       theme_color: "#ffffff",
       "theme-color": "#ffffff",
+      fingerprints: false,
       start_url: "/",
       icons: [
         {

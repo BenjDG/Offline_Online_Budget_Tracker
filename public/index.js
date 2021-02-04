@@ -2,20 +2,14 @@ let transactions = [];
 let lastCallTimestamp;
 let myChart;
 
-
-
 const storedTimestamp = localStorage.getItem('timestamp');
 if(!storedTimestamp) {
   date = dayjs();
+  lastCallTimestamp = date;
   localStorage.setItem('timestamp', date);
 } else {
   lastCallTimestamp = storedTimestamp;
 }
-
-// console.log('lastCallTimestamp time: ' + lastCallTimestamp);
-// console.log('localstorage time: ' + storedTimestamp);
-
-
 
 // fetch data on page load
 fetch("/api/transaction")
@@ -24,7 +18,13 @@ fetch("/api/transaction")
     return response;
   })
   .then(data => {
-    lastCallTimestamp = data.headers.get('Date');
+    const serverTime = data.headers.get('Date');
+    const testtime = dayjs(serverTime);
+    console.log(`The test time is ${testtime}`);
+    // ############################################# change to using momentjs
+    const d = dayjs();
+    console.log(`The current time is ${}`);
+    // localStorage.setItem('timestamp', lastCallTimestamp);
     return data.json();
   })
   .then(data => {
@@ -220,9 +220,5 @@ window.addEventListener('offline', function (e) {
 
 function renderLastCallTimestamp() {
   document.getElementById('timestamp').innerHTML = lastCallTimestamp;
-  console.log(`lastCallTimestamp ${lastCallTimestamp}`);
-}
-
-function cacheTimestamp() {
-
+  console.log(`render lastCallTimestamp ${lastCallTimestamp}`);
 }

@@ -1,11 +1,19 @@
 let transactions = [];
+let lastCallTimestamp;
 let myChart;
-let online = true;
 
 
 
-// if offline show data from cache and indexedDB
+const storedTimestamp = localStorage.getItem('timestamp');
+if(!storedTimestamp) {
+  date = dayjs();
+  localStorage.setItem('timestamp', date);
+} else {
+  lastCallTimestamp = storedTimestamp;
+}
 
+// console.log('lastCallTimestamp time: ' + lastCallTimestamp);
+// console.log('localstorage time: ' + storedTimestamp);
 
 
 
@@ -13,19 +21,19 @@ let online = true;
 fetch("/api/transaction")
   .then(response => {
     console.log('api fetched');
-    return response.json();
+    return response;
+  })
+  .then(data => {
+    lastCallTimestamp = data.headers.get('Date');
+    return data.json();
   })
   .then(data => {
     // save db data on global variable
-    console.log('set transactions to data');
     transactions = data;
-    console.log(`online status is: ${online}`);
-    console.log(`navigator online status is: ${navigator.onLine}`);
     return data;
   })
   .then(() => {
     if (!navigator.onLine) {
-      console.log('not online block test');
       const transaction = db.transaction(["pending"], "readwrite");
       const store = transaction.objectStore("pending");
       // get all records from store and set to a variable
@@ -33,18 +41,13 @@ fetch("/api/transaction")
       const getAll = store.getAll();
       getAll.onsuccess = function () {
         if (getAll.result.length > 0) {
-          console.log(transactions);
-          console.log("retrieved from local object store");
-          console.log(getAll.result);
           getAll.result.forEach((item) => {
-            console.log('PUSH DANG IT')
             transactions.unshift(item);
           })
-          console.log("Does this work? " + transactions);
-          console.dir(transactions);
           populateTotal();
           populateTable();
           populateChart();
+          console.log("????????????????????PPPPPPPPPPPPPPPPPPPPPPPPPlease populate");
         }
       }
     }
@@ -194,12 +197,32 @@ document.querySelector("#sub-btn").onclick = function () {
   sendTransaction(false);
 };
 
+if (navigator.onLine) {
+  document.getElementById('online-status').innerHTML = 'Online';
+  renderLastCallTimestamp();
+} else {
+  document.getElementById('online-status').innerHTML = 'Offline';
+  renderLastCallTimestamp();
+}
+
+
 window.addEventListener('online', function (e) {
-  online = true;
+  document.getElementById('online-status').innerHTML = 'Online';
+  renderLastCallTimestamp();
   console.log('online');
 });
 
 window.addEventListener('offline', function (e) {
-  online = false;
+  document.getElementById('online-status').innerHTML = 'Offline';
+  renderLastCallTimestamp();
   console.log('offline');
 });
+
+function renderLastCallTimestamp() {
+  document.getElementById('timestamp').innerHTML = lastCallTimestamp;
+  console.log(`lastCallTimestamp ${lastCallTimestamp}`);
+}
+
+function cacheTimestamp() {
+
+}

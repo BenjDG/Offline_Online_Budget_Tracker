@@ -1,5 +1,5 @@
-const STATIC_CACHE = "static-cache-v2";
-const RUNTIME_CACHE = "runtime-cache-v2";
+const STATIC_CACHE = "static-cache-v7";
+const RUNTIME_CACHE = "runtime-cache-v7";
 
 const FILES_TO_CACHE = [
   "/",

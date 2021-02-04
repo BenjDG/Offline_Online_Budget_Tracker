@@ -23,18 +23,12 @@ request.onerror = function(event) {
 function saveRecord(record) {
   // create a transaction on the pending db with readwrite access
   const transaction = db.transaction(["pending"], "readwrite");
-
   // access your pending object store
   const store = transaction.objectStore("pending");
-
-  console.log(`The record being saved is: ${record}`);
-  console.dir(record);
-
   // add record to your store with add method.
   try {
     store.add(record);
   } catch (error) {
-    console.log(`The eeeerrrror being saved is: ${error}`);
     console.error(error);
   }
   
@@ -58,14 +52,17 @@ function checkDatabase() {
           "Content-Type": "application/json"
         }
       })
-      .then(response => response.json())
+      .then(data => {
+        const serverTime = data.headers.get('Date');
+        const st = moment(serverTime).format();
+        localStorage.setItem('timestamp', st);
+        return data.json();
+      })      
       .then(() => {
         // if successful, open a transaction on your pending db
         const transaction = db.transaction(["pending"], "readwrite");
-
         // access your pending object store
         const store = transaction.objectStore("pending");
-
         // clear all items in your store
         store.clear();
       });

@@ -1,5 +1,5 @@
-const STATIC_CACHE = "static-cache-v8";
-const RUNTIME_CACHE = "runtime-cache-v8";
+const STATIC_CACHE = "static-cache-v10";
+const RUNTIME_CACHE = "runtime-cache-v10";
 
 const FILES_TO_CACHE = [
   "/",
@@ -47,11 +47,6 @@ self.addEventListener("activate", event => {
 
 // handle fetch section
 self.addEventListener("fetch", event => {
-  if (event.request.method) {
-    // console.log("=============event.request");
-    // console.log(event.request);
-  }
-
   if (
     event.request.method !== "GET" ||
     !event.request.url.startsWith(self.location.origin)

@@ -14,7 +14,6 @@ if(!storedTimestamp) {
 // fetch data on page load
 fetch("/api/transaction")
   .then(response => {
-    console.log('api fetched');
     return response;
   })
   .then(data => {
@@ -33,7 +32,6 @@ fetch("/api/transaction")
       const transaction = db.transaction(["pending"], "readwrite");
       const store = transaction.objectStore("pending");
       // get all records from store and set to a variable
-
       const getAll = store.getAll();
       getAll.onsuccess = function () {
         if (getAll.result.length > 0) {
@@ -43,11 +41,9 @@ fetch("/api/transaction")
           populateTotal();
           populateTable();
           populateChart();
-          console.log("????????????????????PPPPPPPPPPPPPPPPPPPPPPPPPlease populate");
         }
       }
     }
-    console.log("PPPPPPPPPPPPPPPPPPPPPPPPPlease populate");
     populateTotal();
     populateTable();
     populateChart();
@@ -161,7 +157,13 @@ function sendTransaction (isAdding) {
     }
   })
     .then(response => {
-      return response.json();
+      return response;
+    })
+    .then(data => {
+      const serverTime = data.headers.get('Date');
+      const st = moment(serverTime).format();
+      localStorage.setItem('timestamp', st);
+      return data.json();
     })
     .then(data => {
       if (data.errors) {
@@ -175,7 +177,6 @@ function sendTransaction (isAdding) {
     })
     .catch(err => {
       // fetch failed, so save in indexed db
-      console.log("------------------------------------------------------catch err");
       console.error(err);
       saveRecord(transaction);
 
@@ -193,6 +194,7 @@ document.querySelector("#sub-btn").onclick = function () {
   sendTransaction(false);
 };
 
+// when page is first loaded
 if (navigator.onLine) {
   document.getElementById('online-status').innerHTML = 'Online';
   renderLastCallTimestamp();
@@ -205,17 +207,14 @@ if (navigator.onLine) {
 window.addEventListener('online', function (e) {
   document.getElementById('online-status').innerHTML = 'Online';
   renderLastCallTimestamp();
-  console.log('online');
 });
 
 window.addEventListener('offline', function (e) {
   document.getElementById('online-status').innerHTML = 'Offline';
   renderLastCallTimestamp();
-  console.log('offline');
 });
 
 function renderLastCallTimestamp() {
   timestamp = moment(lastCallTimestamp).format('MM-DD-YY,h:mm:ss a');
   document.getElementById('timestamp').innerHTML = timestamp;
-  console.log(`render lastCallTimestamp ${timestamp}`);
 }

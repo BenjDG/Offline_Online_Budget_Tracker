@@ -1,63 +1,73 @@
-# Unit 18 PWA Homework: Online/Offline Budget Trackers
 
-Add functionality to our existing Budget Tracker application to allow for offline access and functionality.
+#  Online/Offline Budget Tracker
 
-The user will be able to add expenses and deposits to their budget with or without a connection. When entering transactions offline, they should populate the total when brought back online.
+![GNU GPLv3 license](https://img.shields.io/badge/license-GNU%20GPLv3-brightgreen)
 
-Offline Functionality:
+This is a budget tracker app that has been upgraded to work online and offline.  The app syncs to the server when there is an internet connection, but it can also work offline and then will sync the data the next time an internet connection is detected. This progressive web application utilizes browser caching and IndexedDB.
 
-  * Enter deposits offline
+<br/>
+<br/>
 
-  * Enter expenses offline
+## Table of Contents
 
-When brought back online:
+* [Installation](#Installation)
+* [Usage](#Usage)
+* [License](#License)
+* [Contributing](#Contributing)
+* [Tests](#Tests)
+* [Questions](#Questions)
 
-  * Offline entries should be added to tracker.
+<br/>
+<br/>
 
-## User Story
-AS AN avid traveller
-I WANT to be able to track my withdrawals and deposits with or without a data/internet connection
-SO THAT my account balance is accurate when I am traveling
+## Screenshot
 
-## Business Context
+![Offline Online Budget Tracker Desktop Screenshot](./public/img/screenshot.PNG)
 
-Giving users a fast and easy way to track their money is important, but allowing them to access that information anytime is even more important. Having offline functionality is paramount to our applications success.
+<br/>
+<br/>
+
+## Installation
+
+Use an internet browser and go to https://offline-online-budget-tracker1.herokuapp.com/
+
+<br/>
+<br/>
+
+## Usage
+
+Enter a transaction name and ammount.  Then, select add or subtract funds.
 
 
-## Acceptance Criteria
-GIVEN a user is on Budget App without an internet connection
-WHEN the user inputs a withdrawal or deposit
-THEN that will be shown on the page, and added to their transaction history when their connection is back online.
+<br/>
+<br/>
 
-- - -
 
-## Commit Early and Often
+## License
 
-* One of the most important skills to master as a web developer is version control. Building the habit of committing via Git is important for two reasons:
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
-1. Your commit history is a signal to employers that you are actively working on projects and learning new skills
+<br/>
+<br/>
 
-2. Your commit history allows you to revert your code base in the event that you need to return to a previous state
+## Contributing
 
-* Follow these guidelines for committing:
+If you would like to contribute, please open an issue in Github.
 
-  * Make single purpose commits for related changes to ensure a clean, manageable history. If you are fixing two issues, make two commits
+<br/>
+<br/>
 
-  * Write descriptive, meaningful commit messages so that you and anyone else looking at your repository can easily understand its history
+## Tests
 
-  * Don't commit half done work, for the sake of your collaborators (and your future self!)
+No tests have been written.
 
-  * Test your application before you commit to ensure functionality at every step in the development process
+<br/>
+<br/>
 
-* We would like you to have well over 200 commits by graduation, so commit early and often!
+## Questions  
 
-* Deploy your application with [Heroku and MongoDB Atlas.](../04-Important/MongoAtlas-Deploy.md)
+If you have questions about the project you can email me, or you can open an issue in the GitHub repository.
 
-## Submission on BCS
-
-* You are required to submit the following:
-
-  * the URL to the deployed application
-
-  * the URL to the Github repository
-
+My GitHub profile is [BenjDG](https://github.com/BenjDG)  
+  
+Email: bdgalloway85@gmail.com.  

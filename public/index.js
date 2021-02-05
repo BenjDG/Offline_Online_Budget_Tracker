@@ -179,7 +179,6 @@ function sendTransaction (isAdding) {
       // fetch failed, so save in indexed db
       console.error(err);
       saveRecord(transaction);
-
       // clear form
       nameEl.value = "";
       amountEl.value = "";
@@ -203,7 +202,6 @@ if (navigator.onLine) {
   renderLastCallTimestamp();
 }
 
-
 window.addEventListener('online', function (e) {
   document.getElementById('online-status').innerHTML = 'Online';
   renderLastCallTimestamp();
@@ -215,6 +213,6 @@ window.addEventListener('offline', function (e) {
 });
 
 function renderLastCallTimestamp() {
-  timestamp = moment(lastCallTimestamp).format('MM-DD-YY,h:mm:ss a');
+  timestamp = moment(lastCallTimestamp).format('LLL');
   document.getElementById('timestamp').innerHTML = timestamp;
 }

@@ -1,5 +1,5 @@
-const STATIC_CACHE = "static-cache-v10";
-const RUNTIME_CACHE = "runtime-cache-v10";
+const STATIC_CACHE = "static-cache-v14";
+const RUNTIME_CACHE = "runtime-cache-v14";
 
 const FILES_TO_CACHE = [
   "/",
@@ -47,6 +47,7 @@ self.addEventListener("activate", event => {
 
 // handle fetch section
 self.addEventListener("fetch", event => {
+  // filter out sw requests?
   if (
     event.request.method !== "GET" ||
     !event.request.url.startsWith(self.location.origin)
@@ -55,17 +56,19 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  // if online and url includes /api/transaction
   if (event.request.url.includes("/api/transaction")) {
     // make network request and fallback to cache if network request fails (offline)
     event.respondWith(
       caches.open(RUNTIME_CACHE).then(cache => {
-        return fetch(event.request)
-          .then(response => {
-            cache.put(event.request, response.clone());
-            return response;
-          })
-          .catch(() => caches.match(event.request));
-      })
+          // fetch
+          return fetch(event.request)
+            .then(response => {
+              cache.put(event.request, response.clone());
+              return response;
+            })
+            .catch(() => caches.match(event.request));
+        })
     );
     return;
   }
@@ -82,9 +85,9 @@ self.addEventListener("fetch", event => {
         return fetch(event.request).then(response => {
           return cache.put(event.request, response.clone()).then(() => {
             return response;
-          });
-        });
-      });
+          })
+        })
+      })
     })
   );
 })
